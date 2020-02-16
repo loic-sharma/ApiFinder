@@ -20,6 +20,27 @@ namespace ApiFinder
 
             var reader = peReader.GetMetadataReader();
 
+            Console.WriteLine("Finding assembly references...");
+            PrintAssemblyReferences(reader);
+
+            Console.WriteLine();
+            Console.WriteLine("Finding method references...");
+            PrintMemberReferences(reader);
+        }
+
+        private static void PrintAssemblyReferences(MetadataReader reader)
+        {
+            foreach (var assemblyReferenceHandle in reader.AssemblyReferences)
+            {
+                var assemblyReference = reader.GetAssemblyReference(assemblyReferenceHandle);
+                var assemblyName = reader.GetString(assemblyReference.Name);
+
+                Console.WriteLine($"Found assembly {assemblyName}");
+            }
+        }
+
+        private static void PrintMemberReferences(MetadataReader reader)
+        {
             foreach (var memberReferenceHandle in reader.MemberReferences)
             {
                 var memberReference = reader.GetMemberReference(memberReferenceHandle);
@@ -43,6 +64,5 @@ namespace ApiFinder
                 Console.WriteLine($"Found method {memberName} on {typeName} in namespace {typeNamespace}");
             }
         }
-
     }
 }
